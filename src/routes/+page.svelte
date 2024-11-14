@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import * as THREE from 'three';
+  import { onMount } from "svelte";
+  import * as THREE from "three";
 
   let container: HTMLDivElement;
   let scene: THREE.Scene;
@@ -10,7 +10,7 @@
   let animationFrameId: number;
 
   const uniforms = {
-    time: { value: 0.0 }
+    time: { value: 0.0 },
   };
 
   const vertexShader = `
@@ -57,7 +57,12 @@
 
   onMount(() => {
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000,
+    );
     camera.position.z = 1;
 
     renderer = new THREE.WebGLRenderer();
@@ -68,7 +73,7 @@
     material = new THREE.ShaderMaterial({
       uniforms,
       vertexShader,
-      fragmentShader
+      fragmentShader,
     });
 
     const mesh = new THREE.Mesh(geometry, material);
@@ -82,7 +87,7 @@
 
     animate();
 
-    window.addEventListener('resize', onWindowResize);
+    window.addEventListener("resize", onWindowResize);
   });
 
   const onWindowResize = () => {

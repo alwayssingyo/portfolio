@@ -22,9 +22,9 @@
   }
 
   h1 {
-      font-size: 20px;
-      font-weight: 600;
-      line-height: 1;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1;
     a {
       font-size: 20px;
       font-weight: 600;

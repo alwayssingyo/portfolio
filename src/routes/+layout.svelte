@@ -5,5 +5,4 @@
 
 <Gnb />
 
-<slot/>
-
+<slot />
