@@ -5,8 +5,5 @@
 
 <Gnb />
 
-<div>
-  <slot/>
-</div>
+<slot/>
 
-<div>메룽 바이</div>
