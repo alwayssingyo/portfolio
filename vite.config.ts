@@ -6,4 +6,13 @@ export default defineConfig({
   ssr: {
     noExternal: ["three"],
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `
+          @use '$lib/assets/styles/mixins' as *;
+        `,
+      },
+    },
+  },
 });

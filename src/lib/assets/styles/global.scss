@@ -1,3 +1,5 @@
+@import "./mixins";
+
 @font-face {
   font-family: "SUITE";
   src: url("../fonts/SUITE-Variable.ttf") format("truetype-variations");
@@ -151,6 +153,7 @@ select:-moz-focusring {
 
 textarea {
   resize: none;
+  appearance: none;
   -webkit-appearance: none;
 }
 
