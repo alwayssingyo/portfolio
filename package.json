@@ -9,7 +9,8 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "format": "prettier --write .",
-    "lint": "prettier --check . && eslint ."
+    "lint": "prettier --check . && eslint .",
+    "gen": "npx supabase gen types typescript --project-id \"mmxwrkkkjibxsxubqnkd\" --schema public > types/supabase.ts"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^3.0.0",
@@ -30,7 +31,9 @@
     "vite": "^5.0.3"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.47.14",
     "sass": "^1.80.7",
+    "supabase": "^2.9.6",
     "three": "^0.170.0"
   }
 }
