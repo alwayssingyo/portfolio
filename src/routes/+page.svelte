@@ -11,6 +11,7 @@
 
   const uniforms = {
     time: { value: 0.0 },
+    fade: { value: 0.0 },
     colors: {
       value: [
         new THREE.Vector3(0.85, 0.92, 0.92), // 청록
@@ -40,6 +41,7 @@
 
   const fragmentShader = `
     uniform float time;
+    uniform float fade;
     uniform vec3 colors[4];
     varying vec2 vUv;
 
@@ -70,7 +72,7 @@
 
     void main() {
       vec3 color = getColor(vUv, time);
-      gl_FragColor = vec4(color, 1.0);
+      gl_FragColor = vec4(color, fade);
     }
   `;
 
@@ -87,8 +89,11 @@
     );
     camera.position.z = 1;
 
-    renderer = new THREE.WebGLRenderer();
+    renderer = new THREE.WebGLRenderer({
+      alpha: true,
+    });
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x000000, 0);
     container.appendChild(renderer.domElement);
 
     const geometry = new THREE.PlaneGeometry(2, 2);
@@ -96,6 +101,7 @@
       uniforms,
       vertexShader,
       fragmentShader,
+      transparent: true,
     });
 
     const mesh = new THREE.Mesh(geometry, material);
@@ -103,6 +109,12 @@
 
     const animate = () => {
       uniforms.time.value += 0.005;
+
+      if (uniforms.fade.value < 1.0) {
+        uniforms.fade.value += 0.02;
+        uniforms.fade.value = Math.min(uniforms.fade.value, 1.0);
+      }
+
       renderer.render(scene, camera);
       animationFrameId = requestAnimationFrame(animate);
     };
