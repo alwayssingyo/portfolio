@@ -2,6 +2,7 @@
   import { supabase } from "$lib/supabaseClient";
   import { onMount } from "svelte";
   import type { Database } from "../../../types/supabase";
+  import "$lib/assets/styles/page.scss";
 
   type Project = Database["public"]["Tables"]["projects"]["Row"];
 
@@ -25,20 +26,22 @@
   });
 </script>
 
-<h1>Projects</h1>
+<div class="page">
+  <h1>Projects</h1>
 
-{#if loading}
-  <p>Loading projects...</p>
-{:else if projects.length === 0}
-  <p>No projects found.</p>
-{:else}
-  <ul>
-    {#each projects as project}
-      <li>
-        <a href={`/works/${project.id}`}>
-          <p>{project.name}</p>
-        </a>
-      </li>
-    {/each}
-  </ul>
-{/if}
+  {#if loading}
+    <p>Loading projects...</p>
+  {:else if projects.length === 0}
+    <p>No projects found</p>
+  {:else}
+    <ul>
+      {#each projects as project}
+        <li>
+          <a href={`/works/${project.id}`}>
+            <p>{project.name}</p>
+          </a>
+        </li>
+      {/each}
+    </ul>
+  {/if}
+</div>
