@@ -1,25 +1,24 @@
 <script lang="ts">
-  import { supabase } from '$lib/supabaseClient';
-  import { onMount } from 'svelte';
-  import type { Database } from '../../../types/supabase';
+  import { supabase } from "$lib/supabaseClient";
+  import { onMount } from "svelte";
+  import type { Database } from "../../../types/supabase";
 
-  type Project = Database['public']['Tables']['projects']['Row'];
+  type Project = Database["public"]["Tables"]["projects"]["Row"];
 
   let projects: Project[] = [];
   let loading = true;
 
   const fetchProjects = async () => {
-    const { data, error } = await supabase.from('projects').select('*');
+    const { data, error } = await supabase.from("projects").select("*");
 
     if (error) {
-      console.error('Error fetching project:', error);
+      console.error("Error fetching project:", error);
       return;
     }
 
     projects = data ?? [];
     loading = false;
   };
-
 
   onMount(() => {
     fetchProjects();

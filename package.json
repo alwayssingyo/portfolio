@@ -13,7 +13,7 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "format": "prettier --write .",
     "lint": "prettier --check . && eslint .",
-    "gen": "npx supabase gen types typescript --project-id \"mmxwrkkkjibxsxubqnkd\" --schema public > types/supabase.ts"
+    "gen": "npx supabase gen types typescript --project-id \"ybbwzcbpfnwlbmcbnhlb\" --schema public > types/supabase.ts"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^3.0.0",
