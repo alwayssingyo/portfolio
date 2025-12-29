@@ -11,7 +11,24 @@
 
   const uniforms = {
     time: { value: 0.0 },
+    colors: {
+      value: [
+        new THREE.Vector3(0.85, 0.92, 0.92), // 청록
+        new THREE.Vector3(0.7, 0.85, 0.85), // 아쿠아
+        new THREE.Vector3(1.0, 0.8, 0.85), // 라벤더
+        new THREE.Vector3(0.9, 0.9, 0.7), // 레몬
+      ],
+    },
   };
+
+  function shuffleArray<T>(array: T[]): T[] {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
 
   const vertexShader = `
     varying vec2 vUv;
@@ -23,6 +40,7 @@
 
   const fragmentShader = `
     uniform float time;
+    uniform vec3 colors[4];
     varying vec2 vUv;
 
     float noise(vec2 uv, float t) {
@@ -36,17 +54,18 @@
     }
 
     vec3 getColor(vec2 uv, float t) {
-      vec3 topLeft = vec3(0.85, 0.92, 0.92); // 청록색
-      vec3 topRight = vec3(0.7, 0.85, 0.85); // 아쿠아마린
-      vec3 bottomLeft = vec3(1.0, 0.8, 0.85); // 라벤더
-      vec3 bottomRight = vec3(0.9, 0.9, 0.7); // 레몬
-
-      vec2 center = vec2(0.5, 0.5);
+      vec2 center = vec2(0.5);
       vec2 rotatedUV = rotate(uv - center, t * 0.05) + center;
 
-      vec2 noiseUV = vec2(noise(rotatedUV, t * 0.5), noise(rotatedUV, t * 0.75));
-      vec3 color = mix(mix(topLeft, topRight, noiseUV.x), mix(bottomLeft, bottomRight, noiseUV.x), noiseUV.y);
-      return color;
+      vec2 noiseUV = vec2(
+        noise(rotatedUV, t * 0.5),
+        noise(rotatedUV, t * 0.75)
+      );
+
+      vec3 top = mix(colors[0], colors[1], noiseUV.x);
+      vec3 bottom = mix(colors[2], colors[3], noiseUV.x);
+
+      return mix(top, bottom, noiseUV.y);
     }
 
     void main() {
@@ -56,6 +75,9 @@
   `;
 
   onMount(() => {
+    // 색상 랜덤 순서 결정
+    uniforms.colors.value = shuffleArray(uniforms.colors.value);
+
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(
       75,
