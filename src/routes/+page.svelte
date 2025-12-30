@@ -2,6 +2,9 @@
   import { onMount } from "svelte";
   import * as THREE from "three";
 
+  /* ===============================
+   * dom & three instances
+   * =============================== */
   let container: HTMLDivElement;
   let scene: THREE.Scene;
   let camera: THREE.PerspectiveCamera;
@@ -9,28 +12,37 @@
   let material: THREE.ShaderMaterial;
   let animationFrameId: number;
 
+  /* ===============================
+   * uniforms & constants
+   * =============================== */
   const uniforms = {
     time: { value: 0.0 },
     fade: { value: 0.0 },
     colors: {
       value: [
-        new THREE.Vector3(0.85, 0.92, 0.92), // 청록
-        new THREE.Vector3(0.7, 0.85, 0.85), // 아쿠아
-        new THREE.Vector3(1.0, 0.8, 0.85), // 라벤더
-        new THREE.Vector3(0.9, 0.9, 0.7), // 레몬
+        new THREE.Vector3(0.85, 0.92, 0.92), // teal
+        new THREE.Vector3(0.7, 0.85, 0.85), // aqua
+        new THREE.Vector3(1.0, 0.8, 0.85), // lavender
+        new THREE.Vector3(0.9, 0.9, 0.7), // lemon
       ],
     },
   };
 
-  function shuffleArray<T>(array: T[]): T[] {
+  /* ===============================
+   * utils
+   * =============================== */
+  const shuffleArray = <T,>(array: T[]): T[] => {
     const arr = [...array];
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;
-  }
+  };
 
+  /* ===============================
+   * shaders
+   * =============================== */
   const vertexShader = `
     varying vec2 vUv;
     void main() {
@@ -52,7 +64,10 @@
     vec2 rotate(vec2 v, float a) {
       float s = sin(a);
       float c = cos(a);
-      return vec2(c * v.x - s * v.y, s * v.x + c * v.y);
+      return vec2(
+        c * v.x - s * v.y,
+        s * v.x + c * v.y
+      );
     }
 
     vec3 getColor(vec2 uv, float t) {
@@ -76,11 +91,12 @@
     }
   `;
 
-  onMount(() => {
-    // 색상 랜덤 순서 결정
-    uniforms.colors.value = shuffleArray(uniforms.colors.value);
-
+  /* ===============================
+   * three setup
+   * =============================== */
+  const initThree = () => {
     scene = new THREE.Scene();
+
     camera = new THREE.PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,
@@ -89,11 +105,10 @@
     );
     camera.position.z = 1;
 
-    renderer = new THREE.WebGLRenderer({
-      alpha: true,
-    });
+    renderer = new THREE.WebGLRenderer({ alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000, 0);
+
     container.appendChild(renderer.domElement);
 
     const geometry = new THREE.PlaneGeometry(2, 2);
@@ -106,29 +121,42 @@
 
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
+  };
 
-    const animate = () => {
-      uniforms.time.value += 0.005;
+  /* ===============================
+   * animation loop
+   * =============================== */
+  const animate = () => {
+    uniforms.time.value += 0.005;
 
-      if (uniforms.fade.value < 1.0) {
-        uniforms.fade.value += 0.02;
-        uniforms.fade.value = Math.min(uniforms.fade.value, 1.0);
-      }
+    if (uniforms.fade.value < 1.0) {
+      uniforms.fade.value = Math.min(uniforms.fade.value + 0.02, 1.0);
+    }
 
-      renderer.render(scene, camera);
-      animationFrameId = requestAnimationFrame(animate);
-    };
+    renderer.render(scene, camera);
+    animationFrameId = requestAnimationFrame(animate);
+  };
 
-    animate();
-
-    window.addEventListener("resize", onWindowResize);
-  });
-
-  const onWindowResize = () => {
+  /* ===============================
+   * resize handler
+   * =============================== */
+  const handleResize = () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
   };
+
+  /* ===============================
+   * lifecycle
+   * =============================== */
+  onMount(() => {
+    uniforms.colors.value = shuffleArray(uniforms.colors.value);
+
+    initThree();
+    animate();
+
+    window.addEventListener("resize", handleResize);
+  });
 </script>
 
 <div bind:this={container} id="container"></div>

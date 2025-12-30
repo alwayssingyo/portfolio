@@ -4,17 +4,37 @@
   import { page } from "$app/stores";
   import type { Database } from "../../../../types/supabase";
 
+  /* ===============================
+   * types
+   * =============================== */
   type Project = Database["public"]["Tables"]["projects"]["Row"];
 
+  /* ===============================
+   * state
+   * =============================== */
   let project: Project | null = null;
   let loading = true;
   let errorMessage = "";
 
+  /* ===============================
+   * route params
+   * =============================== */
   let projectId: number | undefined;
-  $: projectId = $page.params.id ? Number($page.params.id) : undefined;
 
+  $: {
+    const id = $page.params.id;
+    projectId = id ? Number(id) : undefined;
+  }
+
+  /* ===============================
+   * data fetch
+   * =============================== */
   const fetchProject = async () => {
-    if (!projectId) return;
+    if (!projectId) {
+      loading = false;
+      errorMessage = "잘못된 접근입니다.";
+      return;
+    }
 
     const { data, error } = await supabase
       .from("projects")
@@ -24,6 +44,7 @@
 
     if (error) {
       errorMessage = "프로젝트를 찾을 수 없습니다.";
+      project = null;
     } else {
       project = data;
     }
@@ -31,6 +52,9 @@
     loading = false;
   };
 
+  /* ===============================
+   * lifecycle
+   * =============================== */
   onMount(() => {
     fetchProject();
   });
