@@ -1,6 +1,6 @@
 <script lang="ts">
   import { supabase } from "$lib/supabaseClient";
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
   import type { Database } from "../../../types/supabase";
   import "$lib/assets/styles/page.scss";
   import { gsap } from "gsap";
@@ -32,6 +32,23 @@
 
     projects = data ?? [];
     loading = false;
+
+    animateListIn();
+  };
+
+  /* ===============================
+   * list intro animation
+   * =============================== */
+  const animateListIn = async () => {
+    await tick();
+
+    gsap.from(".project-item", {
+      opacity: 0,
+      y: 20,
+      duration: 0.5,
+      ease: "power3.out",
+      stagger: 0.04,
+    });
   };
 
   /* ===============================
@@ -130,9 +147,7 @@
 </script>
 
 <div class="page">
-  {#if loading}
-    <div class="project-empty">Loading projects...</div>
-  {:else if projects.length === 0}
+  {#if loading}{:else if projects.length === 0}
     <div class="project-empty">No projects found</div>
   {:else}
     <div class="project-container">
