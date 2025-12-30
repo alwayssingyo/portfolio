@@ -27,6 +27,7 @@
 
 <svelte:head>
   <title>{data.title}</title>
+  <meta name="description" content="Sung Seungyeon — Portfolio" />
 </svelte:head>
 
 <Gnb />
