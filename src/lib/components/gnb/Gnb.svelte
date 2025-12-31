@@ -4,7 +4,6 @@
     <ul>
       <li><a href="/works">works</a></li>
       <li><a href="/about">about</a></li>
-      <li><a href="/contact">contact</a></li>
     </ul>
   </nav>
 </header>
@@ -43,13 +42,13 @@
     width: 50%;
     ul {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       li {
         + li {
           margin-left: 10px;
         }
         &:last-of-type {
-          margin-left: 20%;
+          margin-left: 40%;
         }
         a {
           font-size: 18px;
