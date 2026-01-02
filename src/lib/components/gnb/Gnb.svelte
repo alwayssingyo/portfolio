@@ -13,7 +13,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -61,6 +61,12 @@
           }
         }
       }
+    }
+  }
+
+  @include desktopSm {
+    header {
+      padding: 80px 40px;
     }
   }
 

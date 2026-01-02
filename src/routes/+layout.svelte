@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { page } from "$app/stores";
+  import Background from "$lib/components/background/Background.svelte";
   import Gnb from "$lib/components/gnb/Gnb.svelte";
   import "$lib/assets/styles/global.scss";
   import Lenis from "@studio-freight/lenis";
@@ -54,6 +55,8 @@
   <meta name="description" content="Frontend Portfolio" />
   <meta property="og:description" content="Frontend Portfolio" />
 </svelte:head>
+
+<Background />
 
 <Gnb />
 

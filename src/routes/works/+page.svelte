@@ -32,110 +32,26 @@
 
     projects = data ?? [];
     loading = false;
-
-    animateListIn();
   };
 
   /* ===============================
-   * list intro animation
+   * supabase image helper
    * =============================== */
-  const animateListIn = async () => {
-    await tick();
+  const getImageUrl = (path?: string | null): string => {
+    if (!path) return "";
 
-    gsap.from(".project-item", {
-      opacity: 0,
-      y: 20,
-      duration: 0.5,
-      ease: "power3.out",
-      stagger: 0.04,
-    });
+    return supabase.storage.from("projects").getPublicUrl(path).data.publicUrl;
   };
 
   /* ===============================
-   * color palette
+   * image error handler
    * =============================== */
-  const baseColors = [
-    [0.85, 0.92, 0.92], // teal
-    [0.7, 0.85, 0.85], // aqua
-    [1.0, 0.8, 0.85], // lavender
-    [0.9, 0.9, 0.7], // lemon
-  ].map(([r, g, b]) => ({
-    r: Math.round(r * 255),
-    g: Math.round(g * 255),
-    b: Math.round(b * 255),
-  }));
-
-  /* ===============================
-   * color helpers
-   * =============================== */
-  const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-
-  const lerpColor = (
-    c1: { r: number; g: number; b: number },
-    c2: { r: number; g: number; b: number },
-    t: number,
-  ) => ({
-    r: Math.round(lerp(c1.r, c2.r, t)),
-    g: Math.round(lerp(c1.g, c2.g, t)),
-    b: Math.round(lerp(c1.b, c2.b, t)),
-  });
-
-  /* ===============================
-   * gradient generator
-   * =============================== */
-  const getGradientColors = (index: number, total: number) => {
-    const t = total <= 1 ? 0 : index / (total - 1);
-    const segment = (baseColors.length - 1) * t;
-    const i = Math.floor(segment);
-    const localT = segment - i;
-
-    const from = baseColors[i];
-    const to = baseColors[Math.min(i + 1, baseColors.length - 1)];
-
-    return {
-      from: lerpColor(from, to, localT),
-      to: lerpColor(to, from, localT * 0.5),
+  let imageErrorMap: Record<number, boolean> = {};
+  const handleImageError = (id: number) => {
+    imageErrorMap = {
+      ...imageErrorMap,
+      [id]: true,
     };
-  };
-
-  /* ===============================
-   * device check
-   * =============================== */
-  const isMobile = () => window.innerWidth <= 768;
-
-  /* ===============================
-   * interactions
-   * =============================== */
-  const manageMouseEnter = (
-    e: MouseEvent & { currentTarget: HTMLAnchorElement },
-    index: number,
-  ) => {
-    if (isMobile()) return;
-
-    const { from, to } = getGradientColors(index, projects.length);
-
-    gsap.to(e.currentTarget, {
-      y: "-20px",
-      duration: 0.3,
-      ease: "power2.out",
-      "--g1": `${from.r}, ${from.g}, ${from.b}`,
-      "--g2": `${to.r}, ${to.g}, ${to.b}`,
-    });
-  };
-
-  const manageMouseLeave = (
-    e: MouseEvent & { currentTarget: HTMLAnchorElement },
-  ) => {
-    if (isMobile()) return;
-
-    gsap.to(e.currentTarget, {
-      y: "0",
-      duration: 0.3,
-      delay: 0.1,
-      ease: "power2.out",
-      "--g1": "255, 255, 255",
-      "--g2": "255, 255, 255",
-    });
   };
 
   /* ===============================
@@ -151,15 +67,28 @@
     <div class="project-empty">No projects found</div>
   {:else}
     <div class="project-container">
-      {#each projects as project, index}
-        <a
-          href={`/works/${project.id}`}
-          class="project-item"
-          on:mouseenter={(e) => manageMouseEnter(e, index)}
-          on:mouseleave={(e) => manageMouseLeave(e)}
-        >
-          {project.name}
-        </a>
+      {#each projects as project}
+        <div class="project-item">
+          <a href={`/works/${project.id}`} class="top">
+            <div class="card">
+              {#if project.img_url && !imageErrorMap[project.id]}
+                <img
+                  class="img"
+                  src={getImageUrl(project.img_url)}
+                  alt={project.name}
+                  loading="lazy"
+                  on:error={() => handleImageError(project.id)}
+                />
+              {:else}
+                <div class="img-fallback"></div>
+              {/if}
+            </div>
+          </a>
+          <a href={`/works/${project.id}`} class="bottom">
+            <div class="title">{project.name}</div>
+            <div class="category">{project.category}</div>
+          </a>
+        </div>
       {/each}
     </div>
   {/if}
