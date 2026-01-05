@@ -8,30 +8,82 @@
   text-align: center;
 }
 
+// works
 .project-container {
   position: relative;
   width: 100%;
-  padding: 40px 80px 80px 80px;
+  padding: 80px;
+  max-width: 1300px;
+  margin: 0 auto;
 }
 
 .project-item {
   position: relative;
-  display: block;
+  display: flex;
   width: 100%;
+  min-height: 120px;
   text-align: left;
-  font-size: 50px;
-  font-weight: 600;
-  padding: 2px 10px;
-  margin-bottom: -20px;
+  padding: 10px;
   border-top: 1px solid #000;
-  border-right: 1px solid #000;
-  border-left: 1px solid #000;
-  will-change: transform;
-  --g1: 255, 255, 255;
-  --g2: 255, 255, 255;
-  transition: background 0.3s ease;
-  will-change: transform, background;
-  background: linear-gradient(120deg, rgb(var(--g1)), rgb(var(--g2)));
+  color: #000;
+  transition: background-color 0.4s;
+}
+
+.project-item-id {
+  flex-shrink: 0;
+  width: 25%;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.project-item-text {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  gap: 100px;
+  .title {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 30px;
+    font-weight: 700;
+    .client {
+      font-size: 24px;
+      font-weight: 600;
+      color: #6b6b6b;
+    }
+  }
+  .category {
+    max-width: 120px;
+    text-align: right;
+    font-size: 20px;
+    font-weight: 600;
+  }
+}
+
+@include tablet {
+  .project-container {
+    max-width: none;
+    padding: 80px 40px;
+  }
+
+  .project-item-id {
+    font-size: 28px;
+  }
+
+  .project-item-text {
+    gap: 20px;
+    .title {
+      font-size: 28px;
+      .client {
+        font-size: 22px;
+      }
+    }
+    .category {
+      max-width: 120px;
+      font-size: 18px;
+    }
+  }
 }
 
 @include mobile {
@@ -43,11 +95,37 @@
   .project-container {
     padding: 0 20px 60px 20px;
   }
+
   .project-item {
-    font-size: 4vw;
+    min-height: 62px;
     margin-bottom: 0;
     padding: 8px 10px;
-    border-left: none;
-    border-right: none;
+  }
+
+  .project-item-id {
+    display: none;
+  }
+
+  .project-item-text {
+    gap: 20px;
+    .title {
+      flex: 1;
+      font-size: 16px;
+      .client {
+        font-size: 13px;
+      }
+    }
+    .category {
+      max-width: 80px;
+      font-size: 12px;
+    }
+  }
+}
+
+@include desktop {
+  .project-item {
+    &:hover {
+      background-color: #e8e8e8;
+    }
   }
 }

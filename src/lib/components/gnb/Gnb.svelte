@@ -64,6 +64,12 @@
     }
   }
 
+  @include tablet {
+    header {
+      padding: 80px 40px;
+    }
+  }
+
   @include mobile {
     header {
       align-items: flex-start;
